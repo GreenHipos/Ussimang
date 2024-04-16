@@ -127,7 +127,7 @@ private:
 	Color*                                              pSysBuffer = nullptr;
 public:
 	static constexpr int ScreenWidth = 800;
-	static constexpr int ScreenHeight = 800;
+	static constexpr int ScreenHeight = 850;
 	static RectI GetScreenRect();
 	void DrawCircle(int x, int y, int radius, Color c);
 	void DrawRect(int x0, int y0, int x1, int y1, Color c);

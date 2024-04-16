@@ -6,6 +6,16 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
+
+double Game::getdt() {
+	static auto lastTime = std::chrono::steady_clock::now();
+	auto currentTime = std::chrono::steady_clock::now();
+
+	double delta = std::chrono::duration<double>(currentTime - lastTime).count();
+	lastTime = currentTime;
+	return delta;
+}
+
 Game::Game(MainWindow& wnd)
 	:
 	wnd(wnd),
@@ -27,8 +37,12 @@ void Game::Go()
 
 void Game::UpdateModel()
 {
-	printFPS(gfx);
 	if (GameIsStarted) {
+		aegtimer += getdt();
+		if (aegtimer >= 1) {
+			aegtimer = 0;
+			aeg++;
+		}
 		if (!GameIsOver) {
 			if (wnd.kbd.KeyIsPressed(VK_UP)) {
 				if (finalway != 4) {
@@ -55,6 +69,7 @@ void Game::UpdateModel()
 				}
 			}
 		}
+		
 		SnakeMoveCounter++;
 		if (SnakeMoveCounter >= SnakeMovePeriod) {
 			if (snake.getSegmentA() < 3) {
@@ -69,6 +84,7 @@ void Game::UpdateModel()
 			else {
 				const bool eating = next == goal.GetLocation();
 				if (eating) {
+					points++;
 					snake.Grow();
 				}
 				snake.MoveBy(delta_loc);
@@ -78,12 +94,8 @@ void Game::UpdateModel()
 			}
 		}
 
-		SnakeSpeedCounter++;
-		if (SnakeSpeedCounter >= SnakeSpeedUpPeriod) {
-			SnakeSpeedCounter = 0;
-			if (SnakeMovePeriod >= 7) {
-				SnakeMovePeriod -= 1;
-			}
+		if (SnakeMovePeriod >= 7) {
+			SnakeMovePeriod -= 0.1 * getdt();
 		}
 	}
 	else {
@@ -110,9 +122,12 @@ void Game::UpdateModel()
 
 void Game::reset()
 {
+	points = 0;
 	SnakeMoveCounter = 0;
 	SnakeMovePeriod = 20;
 	SnakeSpeedCounter = 0;
+	aeg = 0;
+	aegtimer = 0;
 }
 
 void Game::ComposeFrame()
@@ -121,6 +136,10 @@ void Game::ComposeFrame()
 
 	std::chrono::steady_clock::time_point start = std::chrono::steady_clock::now();
 	if (GameIsStarted) {
+		int speed = 20 - SnakeMovePeriod;
+		font.DrawText("Kiirus:" + std::to_string(speed), {220, 810}, Colors::White, gfx);
+		font.DrawText("Aeg: " + std::to_string(aeg), { 380, 810 }, Colors::White, gfx);
+		font.DrawText("Punktid: " + std::to_string(points), { 20, 810 }, Colors::White, gfx);
 		brd.DrawBorder();
 		snake.Draw(brd);
 		goal.Draw(brd);
@@ -144,6 +163,7 @@ void Game::ComposeFrame()
 			gfx.PutPixel(437, 354, Colors::Red);
 			gfx.PutPixel(436, 355, Colors::Red);
 			gfx.PutPixel(437, 355, Colors::Red);
+
 			font.DrawText("Mang Labi", { 330, 350 }, Colors::Red, gfx);
 			font.DrawText("Vajuta Enterit, Et Uuesti Alustada", {120, 378}, Colors::Red, gfx);
 			//sprite.DrawGameOver(350, 350, gfx);
