@@ -94,8 +94,11 @@ void Game::UpdateModel()
 			}
 		}
 
-		if (SnakeMovePeriod >= 7) {
-			SnakeMovePeriod -= 0.1 * getdt();
+		if (SnakeMovePeriod > 7) {
+			SnakeMovePeriod -= (1000 + points * 50) * getdt();
+			if (SnakeMovePeriod < 7) {
+				SnakeMovePeriod = 7;
+			}
 		}
 	}
 	else {
@@ -136,9 +139,10 @@ void Game::ComposeFrame()
 
 	std::chrono::steady_clock::time_point start = std::chrono::steady_clock::now();
 	if (GameIsStarted) {
-		int speed = 20 - SnakeMovePeriod;
-		font.DrawText("Kiirus:" + std::to_string(speed), {220, 810}, Colors::White, gfx);
-		font.DrawText("Aeg: " + std::to_string(aeg), { 380, 810 }, Colors::White, gfx);
+		int speed = 21 - SnakeMovePeriod;
+		//font.DrawText("Kiirus:" + std::to_string(speed), {220, 810}, Colors::White, gfx);
+		font.DrawText("Kiirus:" + std::to_string(SnakeMovePeriod), { 220, 810 }, Colors::White, gfx);
+		//font.DrawText("Aeg: " + std::to_string(aeg), { 380, 810 }, Colors::White, gfx);
 		font.DrawText("Punktid: " + std::to_string(points), { 20, 810 }, Colors::White, gfx);
 		brd.DrawBorder();
 		snake.Draw(brd);
@@ -166,12 +170,10 @@ void Game::ComposeFrame()
 
 			font.DrawText("Mang Labi", { 330, 350 }, Colors::Red, gfx);
 			font.DrawText("Vajuta Enterit, Et Uuesti Alustada", {120, 378}, Colors::Red, gfx);
-			//sprite.DrawGameOver(350, 350, gfx);
 		}
 	}
 	else {
 		font.DrawText("Vajuta Enterit", { 310, 350 }, Colors::White, gfx);
-		//sprite.DrawTitle(300, 300, gfx);
 	}
 
 }

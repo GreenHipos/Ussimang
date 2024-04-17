@@ -5,7 +5,7 @@ Snake::Snake(const Location & loc)
 {
 	constexpr int nBodyColors = 4;
 	constexpr Color bodyColors[nBodyColors] = {
-		{ 10,100,32 },
+		{ 10,130,32 },
 		{ 10,130,48 },
 		{ 18,160,48 },
 		{ 10,130,48 }
