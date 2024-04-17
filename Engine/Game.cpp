@@ -140,9 +140,8 @@ void Game::ComposeFrame()
 	std::chrono::steady_clock::time_point start = std::chrono::steady_clock::now();
 	if (GameIsStarted) {
 		int speed = 21 - SnakeMovePeriod;
-		//font.DrawText("Kiirus:" + std::to_string(speed), {220, 810}, Colors::White, gfx);
-		font.DrawText("Kiirus:" + std::to_string(SnakeMovePeriod), { 220, 810 }, Colors::White, gfx);
-		//font.DrawText("Aeg: " + std::to_string(aeg), { 380, 810 }, Colors::White, gfx);
+		font.DrawText("Kiirus:" + std::to_string(speed), {220, 810}, Colors::White, gfx);
+		font.DrawText("Aeg: " + std::to_string(aeg), { 380, 810 }, Colors::White, gfx);
 		font.DrawText("Punktid: " + std::to_string(points), { 20, 810 }, Colors::White, gfx);
 		brd.DrawBorder();
 		snake.Draw(brd);
